@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>TextBloom</title>
+    </head>
+    <style>
+      /* General Body Styling */
+      body {
+        font-family: "Arial", sans-serif;
+        width: 400px;
+        margin: 0;
+        padding: 20px;
+        background-color: #ffffff;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow-y: scroll;
+      }
+
+      /* Label Styling */
+      #focusedTextLabel, #outputTextLabel {
+        color: #333;
+        font-size: 14px;
+        font-weight: bold;
+        align-self: flex-start;
+        margin-bottom: 8px;
+      }
+
+      /* Input Field Styling */
+      #focusedText, #outputText {
+        width: 100%;
+        padding: 12px;
+        box-sizing: border-box;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        color: #333;
+        background-color: #f9f9f9;
+        transition: border-color 0.3s;
+        margin-bottom: 20px;
+        max-height: 150px;
+        height: 100vh;
+        max-width: 100%;
+      }
+
+      #focusedText:focus, #outputText:focus {
+        border-color: #4463ba;
+        outline: none;
+        box-shadow: 0 0 4px rgba(68, 99, 186, 0.2);
+      }
+      
+      #outputText {
+        width: 100%;
+        padding: 10px;
+        margin-top: 8px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+      }
+
+      /* Button Styling */
+      #printText {
+        background: linear-gradient(90deg, #4463ba, #78a1e6);
+        border: none;
+        color: #fff;
+        font-size: 16px;
+        font-weight: bold;
+        padding: 12px 25px;
+        border-radius: 25px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      #printText:disabled {
+        background: #ccc;
+        color: #666;
+        cursor: not-allowed;
+      }
+      
+      #printText:hover {
+        background: linear-gradient(90deg, #78a1e6, #4463ba);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+      }
+
+      #printText:active {
+        transform: translateY(0);
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+      }
+      
+      #outputWrapper {
+        max-height: 0px;
+        overflow: hidden;
+        transition-duration: 0.5s;
+        
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+      }
+
+      #copyOutput {
+        background-color: #4CAF50; /* Green background */
+        border: none;
+        color: white;
+        font-size: 14px; /* Smaller font size */
+        font-weight: bold;
+        padding: 8px 16px; /* Smaller padding */
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        margin-top: 10px; /* Space above the button */
+        align-self: flex-end; /* Align the button to the right */
+        display: inline-block;  /* Make it inline */
+      }
+
+      #copyOutput:hover {
+        background-color: #45a049; /* Slightly darker green */
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        transform: translateY(-2px); /* Lift effect */
+      }
+
+      #copyOutput:active {
+        background-color: #388e3c; /* Even darker green when clicked */
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        transform: translateY(0); /* Remove lift effect */
+      }
+      
+      /* Container for the loader */
+      .loader-container {
+          display: none;
+          width: 100%;
+          height: 4px;
+          background-color: #e0e0e0; /* Light background for contrast */
+          overflow: hidden;
+          position: relative;
+      }
+
+      /* Loader bar */
+      .loader-bar {
+          width: 0;
+          height: 100%;
+          background-color: #007bff; /* Primary color for the loader */
+          animation: load 10s ease-in-out infinite;
+      }
+
+      /* Keyframes for linear loading animation */
+      @keyframes load {
+          0% {
+              width: 0%;
+              left: 0;
+          }
+          100% {
+              width: 100%;
+              left: 0;
+          }
+      }
+    </style>
+
+    <body>
+      <h3>Beautify your text with single click</h3>
+      <label for="focusedText" id="focusedTextLabel">Focused text:</label>
+      <textarea id="focusedText" readonly></textarea>
+      <div style="margin-bottom: 20px;" id="optionsWrapper">
+          <label for="bType" style="font-size: 14px; font-weight: bold; color: #333; margin-bottom: 8px; display: inline-block;">Beautify type:</label>
+          <select id="bType" style="width: 100%; padding: 10px; font-size: 14px; color: #333; border: 1px solid #ccc; border-radius: 8px; background-color: #f9f9f9; cursor: pointer;">
+              <option value="PLAIN">Just beautify</option>
+              <option value="MAIL">Mail</option>
+              <option value="PRODUCT_DESCRIPTION">Product description</option>
+          </select>
+          <div style="margin-top: 20px; display: flex; align-items: center; gap: 10px;">
+              <label for="htmlFormat" style="font-size: 14px; font-weight: bold; color: #333;">Format as HTML:</label>
+              <input type="checkbox" id="htmlFormat" style="width: 16px; height: 16px; cursor: pointer;" />
+          </div>
+      </div>
+      <button id="printText">Beautify</button>
+      <div id="loader" class="loader-container">
+          <div class="loader-bar"></div>
+      </div>
+      <div id="outputWrapper">
+          <button id="copyOutput">Copy output</button>
+          <div style="width: 100%">
+            <label for="outputText" id="outputTextLabel">Output:</label>
+            <textarea id="outputText" readonly></textarea>
+          </div>
+      </div>
+      <div id="copyright" style="text-align: center; font-size: 12px; color: #555; margin-top: 20px; font-family: Arial, sans-serif;">
+        &copy; <span id="year-range"></span>
+        <a href="https://limitlesssoft.com" target="_blank" style="text-decoration: none; color: #4463ba; font-weight: bold;">LimitlessSoft</a>. All rights reserved.
+      </div>
+      <script src="popup.js"></script>
+    </body>
+</html>

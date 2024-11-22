@@ -1,0 +1,14 @@
+{
+  "name": "TextBloom",
+  "description": "Beautify your text with single click",
+  "version": "1.0",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "hello.html",
+    "default_icon": "hello_extensions.png"
+  },
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": [
+    "https://api.openai.com/"
+  ]
+}
