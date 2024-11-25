@@ -4,6 +4,7 @@
   Download *soon*
 
 ## Features
+  -  Nativ-languaged - process and outputs text in language it got from the input
   -  Format as HTML (first beautify using specific template, then put into nice html with inline styling so you can embed it to your existing html page)
   -  Just beautify - beautifies text to look professional
   -  Email - beautifies as nice email
