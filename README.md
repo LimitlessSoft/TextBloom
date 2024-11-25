@@ -1,5 +1,10 @@
 # Beautify your text with a single click.
 
+## How to use
+  - Downlaod & install extension
+  - Write something in input/text area
+  - While still focusing element, open extension and beautify
+
 ## Chrome extension
   Download *soon*
 
